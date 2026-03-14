@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicaciones Didácticas - Representación del Fenomeno Sonoro</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --cream-light: #FDF8F3;
+      --cream: #F5EDE4;
+      --cream-dark: #E8DDD0;
+      --sage-light: #C5D4C0;
+      --sage: #9BB08F;
+      --sage-dark: #7A9A6D;
+      --terracotta-light: #D4847C;
+      --terracotta: #B85C50;
+      --terracotta-dark: #8B3A30;
+      --burgundy: #6B2D3E;
+      --burgundy-light: #8B4558;
+      --text-primary: #2C2420;
+      --text-secondary: #5C544D;
+      --text-muted: #8A817A;
+      --border: #D4C8BC;
+      --shadow-sm: 0 2px 6px rgba(44, 36, 32, 0.06);
+      --shadow-md: 0 4px 12px rgba(44, 36, 32, 0.08);
+      --shadow-lg: 0 8px 24px rgba(44, 36, 32, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, var(--cream-light) 0, var(--cream) 100%);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--terracotta) 0, var(--terracotta-dark) 100%);
+      padding: 12px 24px;
+      box-shadow: var(--shadow-md);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream-light);
+    }
+
+    .header span {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.85;
+      color: var(--cream-light);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-badge {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 10px;
+      color: var(--cream-light);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 2px;
+      background: var(--cream-dark);
+      padding: 4px;
+      border-radius: var(--radius-md);
+    }
+
+    .tab-btn {
+      padding: 7px 18px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .tab-btn.active {
+      background: #fff;
+      color: var(--terracotta-dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px 16px;
+      gap: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .tab-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0 10px;
+    }
+
+    .tab-content {
+      display: none;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .tab-content.active {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 16px;
+    }
+
+    .sidebar {
+      background: var(--cream-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--cream-dark);
+      border-radius: 10px;
+    }
+
+    .panel-box {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .panel-box-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .panel-box-header h3 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .panel-box-header svg {
+      width: 15px;
+      height: 15px;
+      color: var(--terracotta);
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-row label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .form-row input,
+    .form-row select {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 5px 7px;
+      height: 30px;
+      width: 120px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--cream-light);
+      text-align: right;
+      transition: all 0.2s;
+      outline: 0;
+    }
+
+    .form-row select {
+      text-align: left;
+      width: 130px;
+    }
+
+    .form-row input:focus,
+    .form-row select:focus {
+      border-color: var(--sage);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(155, 176, 143, 0.15);
+    }
+
+    .transport-bar {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .transport-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .tb {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--cream-light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .tb:hover {
+      background: var(--cream-dark);
+      transform: scale(1.05);
+    }
+
+    .tb:active {
+      transform: scale(0.95);
+    }
+
+    .tb.active {
+      background: linear-gradient(135deg, var(--terracotta) 0, var(--terracotta-dark) 100%);
+      color: #fff;
+      border-color: var(--terracotta-dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tb svg {
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+
+    .transport-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-wrap {
+      margin-bottom: 12px;
+    }
+
+    .progress-outer {
+      background: var(--cream-dark);
+      border-radius: 20px;
+      height: 6px;
+      overflow: visible;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .progress-inner {
+      background: linear-gradient(90deg, var(--terracotta-light), var(--terracotta));
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.05s linear;
+      position: relative;
+    }
+
+    .progress-inner::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2.5px solid var(--terracotta);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.1s;
+    }
+
+    .progress-outer:hover .progress-inner::after {
+      transform: scale(1.2);
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .cycle-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .cycle-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .cycle-dot.active {
+      background: var(--terracotta);
+      border-color: var(--terracotta-dark);
+      box-shadow: 0 0 6px rgba(184, 92, 80, 0.3);
+    }
+
+    .cycle-dot.done {
+      background: var(--sage);
+      border-color: var(--sage-dark);
+    }
+
+    .infotag {
+      background: linear-gradient(135deg, var(--sage-light) 0, var(--sage) 100%);
+      color: #fff;
+      font-size: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn-action {
+      flex: 1;
+      border: 0;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-action:active {
+      transform: translateY(0);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, var(--sage) 0, var(--sage-dark) 100%);
+      color: #fff;
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, var(--cream-dark) 0, var(--border) 100%);
+      color: var(--text-secondary);
+    }
+
+    .chart-box {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 0;
+    }
+
+    .chart-header {
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chart-header h2 {
+      font-size: 16px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .chart-header span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .canvas-wrapper canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .readout-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 0 0;
+      border-top: 1px solid var(--cream-dark);
+      margin-top: 6px;
+    }
+
+    .readout {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+      background: var(--cream-light);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--cream-dark);
+      white-space: nowrap;
+    }
+
+    .readout b {
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    .status-pill {
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.3px;
+    }
+
+    .status-pill.playing {
+      background: rgba(155, 176, 143, 0.2);
+      color: var(--sage-dark);
+    }
+
+    .status-pill.paused {
+      background: rgba(184, 92, 80, 0.12);
+      color: var(--terracotta);
+    }
+
+    .status-pill.stopped {
+      background: var(--cream-dark);
+      color: var(--text-muted);
+    }
+
+    .kbd-hint {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    .kbd {
+      display: inline-block;
+      background: var(--cream-light);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      margin: 0 1px;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .toggle-chip {
+      font-size: 10px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--cream-light);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .toggle-chip:hover {
+      border-color: var(--sage);
+    }
+
+    .toggle-chip.on {
+      background: var(--terracotta);
+      color: #fff;
+      border-color: var(--terracotta-dark);
+    }
+
+    .toggle-chip.sage-on {
+      background: var(--sage);
+      color: #fff;
+      border-color: var(--sage-dark);
+    }
+
+    .toggle-chip.burg-on {
+      background: var(--burgundy);
+      color: #fff;
+      border-color: var(--burgundy);
+    }
+
+    .legend-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 6px 0;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    .tab-content.theory-tab.active {
+      display: flex;
+      grid-template-columns: none;
+    }
+
+    .theory-scroll {
+      flex: 1;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      padding: 40px 48px;
+    }
+
+    .theory-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .theory-scroll::-webkit-scrollbar-thumb {
+      background: var(--cream-dark);
+      border-radius: 10px;
+    }
+
+    .theory-content {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .theory-content h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--burgundy);
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .theory-content .subtitle {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--cream-dark);
+    }
+
+    .theory-content h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--terracotta-dark);
+      margin: 28px 0 10px;
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .theory-content h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 4px;
+      height: 100%;
+      background: var(--terracotta);
+      border-radius: 2px;
+    }
+
+    .theory-content p {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      text-align: justify;
+    }
+
+    .theory-content .lead {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      font-weight: 500;
+      background: linear-gradient(135deg, rgba(197, 212, 192, 0.15), rgba(155, 176, 143, 0.1));
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--sage);
+      margin-bottom: 20px;
+    }
+
+    .def-card {
+      background: var(--cream-light);
+      border: 1px solid var(--cream-dark);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .def-card .def-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .def-card .def-icon.compression {
+      background: rgba(184, 92, 80, 0.12);
+      color: var(--terracotta);
+    }
+
+    .def-card .def-icon.rarefaction {
+      background: rgba(59, 107, 143, 0.12);
+      color: #3B6B8F;
+    }
+
+    .def-card .def-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .def-card .def-text {
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+
+    .theory-content .num-list {
+      counter-reset: titem;
+      margin: 14px 0 14px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .theory-content .num-list li {
+      counter-increment: titem;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      padding-left: 32px;
+      position: relative;
+    }
+
+    .theory-content .num-list li::before {
+      content: counter(titem);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--burgundy);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .theory-note {
+      background: linear-gradient(135deg, rgba(107, 45, 62, 0.06), rgba(107, 45, 62, 0.02));
+      border: 1px solid rgba(107, 45, 62, 0.12);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-top: 20px;
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+
+    .theory-note strong {
+      color: var(--burgundy);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <h1>Representacion del Fenomeno Sonoro</h1>
+    <span>Aplicaciones Didácticas</span>
+  </div>
+  <div class="header-badge" id="statusBadge">CARGANDO</div>
+</header>
+
+<div class="app-container">
+
+  <div class="tab-row">
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" data-tab="sine">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        Representación del Fenómeno Sonoro
+      </button>
+      <button class="tab-btn" data-tab="longitudinal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="4" cy="12" r="1.2"/><circle cx="7.5" cy="12" r="1.2"/>
+          <circle cx="10.5" cy="12" r="1.2"/><circle cx="14" cy="12" r="1.2"/>
+          <circle cx="17.5" cy="12" r="1.2"/><circle cx="21" cy="12" r="1.2"/>
+        </svg>
+        Propagación (Ondas Mecánicas Longitudinales)
+      </button>
+      <button class="tab-btn" data-tab="theory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        Definiciones & Bibliografia
+      </button>
+    </div>
+  </div>
+
+  <div class="tab-content active" id="tabSine">
+    <aside class="sidebar">
+      <div class="panel-box">
+        <div class="panel-box-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <h3>Parámetros de la Señal</h3>
+        </div>
+        <div class="form-row">
+          <label>Frecuencia (Hz)</label>
+          <input type="number" id="freq" value="1000" min="1" step="1">
+        </div>
+        <div class="form-row">
+          <label>Nivel (%)</label>
+          <input type="number" id="level" value="100" min="0" max="150" step="1">
+        </div>
+        <div class="form-row">
+          <label>Fase (°)</label>
+          <input type="number" id="phase" value="0" step="1">
+        </div>
+      </div>
+      
+      <div class="panel-box">
+        <div class="panel-box-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <h3>Parámetros de la Representación</h3>
+        </div>
+        <div class="form-row">
+          <label>Ciclos Visibles</label>
+          <input type="number" id="cycles" value="2" min="1" max="8" step="1">
+        </div>
+        <div class="form-row">
+          <label>Velocidad</label>
+          <select id="animSpeed">
+            <option value="0.15">Muy Lenta</option>
+            <option value="0.3">Lenta</option>
+            <option value="0.6" selected>Normal</option>
+            <option value="1.0">Rápida</option>
+            <option value="1.8">Muy Rápida</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Reproducción</label>
+          <select id="animMode">
+            <option value="once">Ciclo Único</option>
+            <option value="loop" selected>Cíclica</option>
+            <option value="bounce">Reversa</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Color de la Señal</label>
+          <select id="themeClr">
+            <option value="#B85C50">Terracota</option>
+            <option value="#7A9A6D">Sage</option>
+            <option value="#6B2D3E">Borgoña</option>
+            <option value="#6B4423">Marrón</option>
+            <option value="#3B6B8F">Azul</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Trazo de la Señal</label>
+          <select id="lineT">
+            <option value="solid">Continua</option>
+            <option value="dashed">Segmentos</option>
+            <option value="dotted">Puntos</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="panel-box" style="padding:12px 14px">
+        <div class="panel-box-header" style="margin-bottom:8px;padding-bottom:6px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="15"/><circle cx="9" cy="18" r="3"/></svg>
+          <h3>Modo de Visualización</h3>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:10px">
+          <span class="toggle-chip on" id="modeCircle" style="flex:1;text-align:center;font-size:10px">⭕ Círculo</span>
+          <span class="toggle-chip" id="modePendulum" style="flex:1;text-align:center;font-size:10px">🔵 Péndulo</span>
+        </div>
+        <div style="border-top:1px solid var(--cream-dark);padding-top:8px">
+          <span class="toggle-chip" id="frictionChip" style="width:100%;display:block;text-align:center;font-size:10px;transition:all .25s">〜 Rozamiento: OFF</span>
+        </div>
+      </div>
+      
+      <div class="transport-bar">
+        <div class="transport-row">
+          <button class="tb" id="btnStart" title="Ir al inicio (Home)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" transform="scale(-1,1) translate(-24,0)"/></svg>
+          </button>
+          <button class="tb" id="btnStepBack" title="Retroceder 1° (←)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </button>
+          <button class="tb active" id="btnPlay" title="Play / Pausa (Espacio)">
+            <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14l8-7z"/></svg>
+          </button>
+          <button class="tb" id="btnStepFwd" title="Avanzar 1° (→)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+          </button>
+          <button class="tb" id="btnEnd" title="Ir al final (End)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+        </div>
+        <div class="transport-label" id="transportLabel">▶ REPRODUCIENDO</div>
+      </div>
+      
+      <div class="progress-wrap">
+        <div class="progress-outer" id="progressBar">
+          <div class="progress-inner" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="progress-labels">
+          <span>0°</span>
+          <span id="progressPct">0%</span>
+          <span id="progressMax">720°</span>
+        </div>
+        <div class="cycle-dots" id="cycleDots"></div>
+      </div>
+      
+      <div class="infotag" id="sineInfoTag"><strong>🎓 Nota Didáctica:</strong><br>El punto rota en el círculo unitario. Su proyección vertical genera la función senoidal. Usá las flechas para avanzar grado a grado y observar la relación geométrica.</div>
+      
+      <div class="kbd-hint">
+        <span class="kbd">Espacio</span> Play/Pausa 
+        <span class="kbd">←</span><span class="kbd">→</span> ±1° 
+        <span class="kbd">Shift+←→</span> ±10° 
+        <span class="kbd">Home</span><span class="kbd">End</span>
+      </div>
+      
+      <div class="btn-row" style="margin-top:10px">
+        <button id="btnReset" class="btn-action btn-reset">↺ Reiniciar</button>
+        <button id="btnImg" class="btn-action btn-download">📥 Exportar PNG</button>
+      </div>
+    </aside>
+    
+    <main class="chart-box">
+      <div class="chart-header">
+        <div>
+          <h2>Representacion del Fenomeno Sonoro — Dominio del Tiempo</h2>
+          <span>Generación desde el Círculo Unitario</span>
+        </div>
+        <div class="status-pill playing" id="statusPill">▶ PLAY</div>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="viewCanvas"></canvas>
+      </div>
+      <div class="readout-bar">
+        <div class="readout">θ <b id="rAngle">0.0°</b></div>
+        <div class="readout">sen(θ) <b id="rSin">0.000</b></div>
+        <div class="readout">Nivel <b id="rLevel">0 %</b></div>
+        <div class="readout">dBFS <b id="rDb">-∞</b></div>
+        <div class="readout">t <b id="rTime">0.000 ms</b></div>
+        <div class="readout">Ciclo <b id="rCycle">1/2</b></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="tab-content" id="tabLongitudinal">
+    <aside class="sidebar">
+      <div class="panel-box">
+        <div class="panel-box-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+          <h3>Parámetros de la Onda</h3>
+        </div>
+        <div class="form-row">
+          <label>Frecuencia (Hz)</label>
+          <input type="number" id="lwFreq" value="2" min="0.5" max="10" step="0.1">
+        </div>
+        <div class="form-row">
+          <label>Amplitud (%)</label>
+          <input type="number" id="lwAmp" value="80" min="10" max="100" step="5">
+        </div>
+        <div class="form-row">
+          <label>Longitud de Onda (λ)</label>
+          <select id="lwWavelengths">
+            <option value="1">1 λ</option>
+            <option value="2" selected>2 λ</option>
+            <option value="3">3 λ</option>
+            <option value="4">4 λ</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Densidad Partículas</label>
+          <select id="lwDensity">
+            <option value="low">Baja</option>
+            <option value="med" selected>Media</option>
+            <option value="high">Alta</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="panel-box">
+        <div class="panel-box-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <h3>Visualización</h3>
+        </div>
+        <div class="form-row">
+          <label>Velocidad</label>
+          <select id="lwSpeed">
+            <option value="0.3">Muy Lenta</option>
+            <option value="0.6">Lenta</option>
+            <option value="1.0" selected>Normal</option>
+            <option value="1.8">Rápida</option>
+            <option value="3.0">Muy Rápida</option>
+          </select>
+        </div>
+        <div style="margin-top:8px">
+          <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px">Paneles Visibles</label>
+          <div class="toggle-row">
+            <span class="toggle-chip on" data-panel="particles" id="tgParticles">● Partículas</span>
+            <span class="toggle-chip sage-on" data-panel="displacement" id="tgDisp">● Desplazamiento</span>
+            <span class="toggle-chip burg-on" data-panel="pressure" id="tgPressure">● Presión</span>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:8px">
+          <label>Mostrar Guías</label>
+          <select id="lwGuides">
+            <option value="all" selected>Todas</option>
+            <option value="nodes">Solo Nodos</option>
+            <option value="none">Ninguna</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="transport-bar">
+        <div class="transport-row">
+          <button class="tb active" id="lwBtnPlayPause" title="Play / Pausa (Espacio)">
+            <svg id="lwIconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14l8-7z"/></svg>
+          </button>
+          <button class="tb" id="lwBtnReset" title="Reiniciar (R)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+        </div>
+        <div class="transport-label" id="lwTransportLabel">▶ REPRODUCIENDO</div>
+      </div>
+      
+      <div class="panel-box" style="padding:10px 12px">
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-swatch" style="background:#B85C50"></div>Compresión</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:#3B6B8F"></div>Rarefacción</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:#7A9A6D;height:3px"></div>Desplaz.</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:#6B2D3E;height:3px"></div>Presión</div>
+        </div>
+      </div>
+      
+      <div class="kbd-hint">
+        <span class="kbd">Espacio</span> Play/Pausa 
+        <span class="kbd">R</span> Reiniciar
+      </div>
+      
+      <div class="btn-row" style="margin-top:10px">
+        <button id="lwBtnExport" class="btn-action btn-download">📥 Exportar PNG</button>
+      </div>
+    </aside>
+    
+    <main class="chart-box">
+      <div class="chart-header">
+        <div>
+          <h2>Propagación del Fenomeno Sonoro</h2>
+          <span>Partículas · Desplazamiento · Presión</span>
+        </div>
+        <div class="status-pill playing" id="lwStatusPill">▶ PLAY</div>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="lwCanvas"></canvas>
+      </div>
+      <div class="readout-bar">
+        <div class="readout">λ <b id="lwRLambda">—</b></div>
+        <div class="readout">f <b id="lwRFreq">2 Hz</b></div>
+        <div class="readout">Fase <b id="lwRPhase">0°</b></div>
+        <div class="readout">t <b id="lwRTime">0.000 s</b></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="tab-content theory-tab" id="tabTheory">
+    <div class="theory-scroll">
+      <div class="theory-content">
+        <h2>Naturaleza Mecánica del Fenomeno Sonoro</h2>
+        <h2>Master Handbook Acoustic - A. Everest / K. Pohlmann (Cap. 1 - 3)</h2>
+        <div class="subtitle">Fundamentos de Acústica · Ondas Mecánicas Longitudinales · Movimiento Armónico Simple</div>
+        
+        <p class="lead">El fenómeno sonoro se define como una sucesión de variaciones de presión que se propagan a través de un medio elástico (en nuestro caso la atmósfera) en forma de ondas mecánicas longitudinales.</p>
+        
+        <p>Este fenómeno se origina cuando una fuente sonora en vibración actúa como un pistón mecánico sobre el medio. Al oscilar, la fuente altera el estado de equilibrio del medio, provocando que las partículas que lo componen experimenten un desplazamiento (oscilación) en la misma dirección de propagación de la onda. Este movimiento genera la alternancia de dos estados físicos fundamentales:</p>
+        
+        <div class="def-card">
+          <div class="def-icon compression">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 8l-5 5-5-5"/></svg>
+          </div>
+          <div>
+            <div class="def-label">Compresiones</div>
+            <div class="def-text">Regiones donde las partículas se agrupan momentáneamente, lo que provoca un incremento local en la densidad del medio y por consiguiente, una presión acústica positiva respecto a la presión atmosférica estática de equilibrio.</div>
+          </div>
+        </div>
+        
+        <div class="def-card">
+          <div class="def-icon rarefaction">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16l5-5 5 5"/></svg>
+          </div>
+          <div>
+            <div class="def-label">Rarefacciones</div>
+            <div class="def-text">Regiones donde las partículas se separan, resultando en una disminución de la densidad y una presión acústica negativa o de succión (un descenso de presión por debajo del nivel de equilibrio).</div>
+          </div>
+        </div>
+
+        <h3>Relación entre Desplazamiento y Presión</h3>
+        <p>Desde un análisis cinemático, el desplazamiento de cada partícula respecto a su posición de reposo describe una función senoidal, en función del tiempo. Sin embargo, es crucial notar que la función que representa la presión se encuentra desfasada 90° respecto a la función del desplazamiento:</p>
+        
+        <ol class="num-list">
+          <li>En los puntos de <strong>máximo desplazamiento</strong> de las partículas, la variación de densidad es nula, por lo que la presión es nula.</li>
+          <li>En los puntos de <strong>desplazamiento nulo</strong> (cuando la partícula pasa por su posición de reposo/equilibrio con velocidad máxima), la tasa de variación de la densidad es máxima, alcanzando allí las mayores variaciones de presión (positivos o negativos).</li>
+        </ol>
+        
+        <div class="theory-note">
+          <strong>🎓 Nota Didáctica:</strong> Podés explorar visualmente estos conceptos en la pestaña <em>Propagación</em>, donde las partículas animadas muestran las compresiones y rarefacciones en tiempo real, junto con las curvas de desplazamiento y presión alineadas verticalmente.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const getElementById = id => document.getElementById(id);
+
+const CONSTANTS = {
+  TWO_PI: 2 * Math.PI,
+  RADIANS_PER_DEGREE: Math.PI / 180,
+  DAMPING_COEFFICIENT: 1.85,
+  SPEED_OF_SOUND: 343
+};
+
+const convertHexToRgba = (hexCode, alphaValue) => {
+  const red = parseInt(hexCode.slice(1, 3), 16);
+  const green = parseInt(hexCode.slice(3, 5), 16);
+  const blue = parseInt(hexCode.slice(5, 7), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alphaValue})`;
+};
+
+const clampBetweenZeroAndOne = value => Math.max(0, Math.min(1, value));
+
+const calculateDecibelsFS = linearValue => {
+  const absoluteValue = Math.abs(linearValue);
+  if (absoluteValue < 0.000001) {
+    return '-∞';
+  }
+  const decibels = 20 * Math.log10(absoluteValue);
+  return decibels < -60 ? '-∞' : decibels.toFixed(1);
+};
+
+function initializeTabSystem() {
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-content');
+  const tabIdentifiers = {
+    sine: 'tabSine',
+    longitudinal: 'tabLongitudinal',
+    theory: 'tabTheory'
+  };
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTabName = button.dataset.tab;
+      
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      tabPanels.forEach(panel => panel.classList.remove('active'));
+      
+      const targetPanelId = tabIdentifiers[targetTabName];
+      document.getElementById(targetPanelId).classList.add('active');
+      
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 20);
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+    });
+  });
+}
+
+function initializeSineSimulation() {
+  const canvas = getElementById('viewCanvas');
+  const context = canvas.getContext('2d');
+  
+  const displayAngle = getElementById('rAngle');
+  const displaySine = getElementById('rSin');
+  const displayLevel = getElementById('rLevel');
+  const displayDecibels = getElementById('rDb');
+  const displayTime = getElementById('rTime');
+  const displayCycle = getElementById('rCycle');
+  
+  const progressFillBar = getElementById('progressFill');
+  const progressPercentageText = getElementById('progressPct');
+  const progressMaximumText = getElementById('progressMax');
+  const cycleDotsContainer = getElementById('cycleDots');
+  
+  const statusPillIndicator = getElementById('statusPill');
+  const statusBadgeIndicator = getElementById('statusBadge');
+  const transportStateLabel = getElementById('transportLabel');
+  const playButtonIcon = getElementById('iconPlay');
+  
+  const dashStylesMap = { 
+    solid: [], 
+    dashed: [10, 6], 
+    dotted: [3, 4] 
+  };
+  
+  let pixelRatio = 1;
+  let currentProgress = 0;
+  let isPlaying = true;
+  let hasFinished = false;
+  let playbackDirection = 1;
+  let visualizationMode = 'circle';
+  let isFrictionEnabled = false;
+  let isDraggingProgress = false;
+  let steppingIntervalId = null;
+
+  function getCurrentSettings() {
+    return {
+      frequency: Math.max(1, parseFloat(getElementById('freq').value) || 1000),
+      amplitudeLevel: Math.max(0, Math.min(150, parseFloat(getElementById('level').value) || 100)),
+      phaseOffset: parseFloat(getElementById('phase').value) || 0,
+      visibleCycles: Math.max(1, Math.min(8, parseInt(getElementById('cycles').value) || 2)),
+      animationSpeed: parseFloat(getElementById('animSpeed').value) || 0.6,
+      playbackMode: getElementById('animMode').value,
+      themeColor: getElementById('themeClr').value,
+      lineDashStyle: dashStylesMap[getElementById('lineT').value] || []
+    };
+  }
+
+  function renderCycleDots(numberOfCycles) {
+    cycleDotsContainer.innerHTML = '';
+    for (let index = 0; index < numberOfCycles; index++) {
+      const dotElement = document.createElement('div');
+      dotElement.className = 'cycle-dot';
+      dotElement.title = `Ciclo ${index + 1}`;
+      cycleDotsContainer.appendChild(dotElement);
+    }
+  }
+
+  function updateCycleDotsState(settings, currentProgressValue) {
+    const dotElements = cycleDotsContainer.children;
+    const currentCycleIndex = Math.floor(currentProgressValue * settings.visibleCycles);
+    
+    for (let index = 0; index < dotElements.length; index++) {
+      dotElements[index].classList.toggle('done', index < currentCycleIndex);
+      dotElements[index].classList.toggle('active', index === currentCycleIndex && currentProgressValue < 1);
+    }
+  }
+
+  function handleCanvasResize() {
+    const parentRect = canvas.parentElement.getBoundingClientRect();
+    pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = parentRect.width * pixelRatio;
+    canvas.height = parentRect.height * pixelRatio;
+    canvas.style.width = `${parentRect.width}px`;
+    canvas.style.height = `${parentRect.height}px`;
+  }
+
+  function updateTransportStatusUI(settings) {
+    let stateLabelText, pillText, pillClass, badgeText;
+    
+    if (hasFinished && settings.playbackMode === 'once') {
+      stateLabelText = '■ DETENIDO';
+      pillText = '■ FIN';
+      pillClass = 'stopped';
+      badgeText = 'COMPLETADO';
+    } else if (isPlaying) {
+      stateLabelText = '▶ REPRODUCIENDO';
+      pillText = '▶ REPRODUCIENDO';
+      pillClass = 'playing';
+      badgeText = 'EN VIVO';
+    } else {
+      stateLabelText = '⏸ EN PAUSA';
+      pillText = '⏸ PAUSA';
+      pillClass = 'paused';
+      badgeText = 'PAUSA';
+    }
+    
+    transportStateLabel.textContent = stateLabelText;
+    statusPillIndicator.textContent = pillText;
+    statusPillIndicator.className = `status-pill ${pillClass}`;
+    statusBadgeIndicator.textContent = badgeText;
+    
+    const playButtonElement = getElementById('btnPlay');
+    
+    if (isPlaying && !hasFinished) {
+      playButtonIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14l8-7z"/>';
+      playButtonElement.classList.add('active');
+    } else {
+      playButtonIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+      playButtonElement.classList.remove('active');
+    }
+  }
+
+  function renderAnimationLoop() {
+    if (!getElementById('tabSine').classList.contains('active')) {
+      requestAnimationFrame(renderAnimationLoop);
+      return;
+    }
+    
+    const settings = getCurrentSettings();
+    const { frequency, amplitudeLevel, phaseOffset, visibleCycles, animationSpeed, playbackMode, themeColor, lineDashStyle } = settings;
+    
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    const canvasWidth = canvas.width / pixelRatio;
+    const canvasHeight = canvas.height / pixelRatio;
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    const targetAmplitude = Math.max(0, Math.min(amplitudeLevel / 100, 1.5));
+    const phaseInRadians = phaseOffset * CONSTANTS.RADIANS_PER_DEGREE;
+    const totalRotationAngle = visibleCycles * CONSTANTS.TWO_PI;
+    
+    const layoutMargin = 40;
+    const baseRadius = Math.max(25, Math.min((canvasHeight - layoutMargin * 2) * 0.32, (canvasWidth - layoutMargin * 2) * 0.15));
+    const circleCenterX = layoutMargin + baseRadius + 10;
+    const circleCenterY = canvasHeight / 2;
+    
+    const waveformStartX = circleCenterX + baseRadius + 50;
+    const waveformEndX = canvasWidth - layoutMargin - 40;
+    const waveformWidth = Math.max(60, waveformEndX - waveformStartX);
+    const waveformAmplitudePixels = Math.max(25, baseRadius);
+    
+    const currentAbsoluteAngle = currentProgress * totalRotationAngle;
+    const currentWrappedAngle = ((currentAbsoluteAngle % CONSTANTS.TWO_PI) + CONSTANTS.TWO_PI) % CONSTANTS.TWO_PI;
+    const activeCycleNumber = Math.min(visibleCycles, Math.floor(currentProgress * visibleCycles) + 1);
+    
+    const currentDampingFactor = isFrictionEnabled ? Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * currentProgress) : 1;
+    const currentDampedAmplitude = targetAmplitude * currentDampingFactor;
+    
+    const currentSineValue = currentDampedAmplitude * Math.sin(currentWrappedAngle + phaseInRadians);
+    const currentCosineValue = currentDampedAmplitude * Math.cos(currentWrappedAngle + phaseInRadians);
+    
+    const tracingDotX = circleCenterX + baseRadius * currentCosineValue;
+    const tracingDotY = circleCenterY - baseRadius * currentSineValue;
+    
+    const signalPeriod = 1 / frequency;
+    const totalSimulationTime = signalPeriod * visibleCycles;
+    const currentElapsedTime = currentProgress * totalSimulationTime;
+    
+    context.save();
+    context.strokeStyle = 'rgba(212, 200, 188, 0.4)';
+    context.lineWidth = 0.7;
+    context.setLineDash([5, 4]);
+    
+    context.beginPath();
+    context.moveTo(circleCenterX - baseRadius - 12, circleCenterY);
+    context.lineTo(circleCenterX + baseRadius + 12, circleCenterY);
+    context.moveTo(circleCenterX, circleCenterY - baseRadius - 12);
+    context.lineTo(circleCenterX, circleCenterY + baseRadius + 12);
+    context.stroke();
+    context.setLineDash([]);
+    
+    context.strokeStyle = 'rgba(180, 170, 160, 0.6)';
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(waveformStartX, circleCenterY);
+    context.lineTo(waveformEndX, circleCenterY);
+    context.stroke();
+    
+    context.setLineDash([4, 4]);
+    const verticalGridPercentages = [0.25, 0.5, 0.75, 1.0];
+    for (const percentage of verticalGridPercentages) {
+      const yOffsetPixels = waveformAmplitudePixels * percentage;
+      context.strokeStyle = percentage === 1 ? 'rgba(180, 170, 160, 0.45)' : 'rgba(212, 200, 188, 0.3)';
+      context.lineWidth = percentage === 1 ? 0.8 : 0.5;
+      
+      context.beginPath();
+      context.moveTo(waveformStartX, circleCenterY - yOffsetPixels);
+      context.lineTo(waveformEndX, circleCenterY - yOffsetPixels);
+      context.moveTo(waveformStartX, circleCenterY + yOffsetPixels);
+      context.lineTo(waveformEndX, circleCenterY + yOffsetPixels);
+      context.stroke();
+    }
+    
+    const totalDivisions = visibleCycles * 4;
+    for (let divisionIndex = 0; divisionIndex <= totalDivisions; divisionIndex++) {
+      const xPosition = waveformStartX + (divisionIndex / totalDivisions) * waveformWidth;
+      context.strokeStyle = (divisionIndex % 4 === 0) ? 'rgba(180, 170, 160, 0.5)' : 'rgba(212, 200, 188, 0.25)';
+      context.lineWidth = (divisionIndex % 4 === 0) ? 0.9 : 0.5;
+      
+      context.beginPath();
+      context.moveTo(xPosition, circleCenterY - waveformAmplitudePixels - 8);
+      context.lineTo(xPosition, circleCenterY + waveformAmplitudePixels + 8);
+      context.stroke();
+    }
+    context.setLineDash([]);
+    
+    context.font = "500 9px 'JetBrains Mono'";
+    context.textAlign = 'center';
+    for (let divisionIndex = 0; divisionIndex <= visibleCycles * 4; divisionIndex++) {
+      if (divisionIndex % 2 !== 0 && visibleCycles > 3) continue;
+      
+      const xPosition = waveformStartX + (divisionIndex / (visibleCycles * 4)) * waveformWidth;
+      const degreesLabel = (divisionIndex / 4) * 360;
+      const millisecondsLabel = (divisionIndex / (visibleCycles * 4)) * totalSimulationTime * 1000;
+      
+      context.fillStyle = '#8A817A';
+      context.fillText(`${degreesLabel}°`, xPosition, circleCenterY + waveformAmplitudePixels + 22);
+      context.fillStyle = '#B0A89F';
+      context.fillText(`${millisecondsLabel.toFixed(1)}ms`, xPosition, circleCenterY + waveformAmplitudePixels + 34);
+    }
+    
+    context.textAlign = 'right';
+    context.fillStyle = '#8A817A';
+    const amplitudeLabels = [-1, -0.5, 0, 0.5, 1];
+    for (const percentage of amplitudeLabels) {
+      const percentageText = Math.round(percentage * 100);
+      context.fillText(`${percentageText}%`, waveformStartX - 6, circleCenterY - waveformAmplitudePixels * percentage + 3);
+    }
+    
+    context.textAlign = 'left';
+    for (const percentage of amplitudeLabels) {
+      const yPosition = circleCenterY - waveformAmplitudePixels * percentage;
+      const absoluteValue = Math.abs(percentage);
+      const decibelText = absoluteValue < 0.001 ? '-∞' : `${(20 * Math.log10(absoluteValue)).toFixed(1)}dB`;
+      context.fillText(decibelText, waveformEndX + 6, yPosition + 3);
+    }
+    
+    context.textAlign = 'center';
+    context.font = "500 10px 'DM Sans'";
+    context.fillStyle = '#5C544D';
+    context.fillText('Dominio del Tiempo (ms)', (waveformStartX + waveformEndX) / 2, circleCenterY + waveformAmplitudePixels + 50);
+    context.restore();
+    
+    let activeVisualDotX = tracingDotX;
+    let activeVisualDotY = tracingDotY;
+    
+    if (visualizationMode === 'circle') {
+      const fullReferenceRadius = Math.max(2, baseRadius * targetAmplitude);
+      const activeDampedRadius = Math.max(2, baseRadius * currentDampedAmplitude);
+      
+      if (isFrictionEnabled && targetAmplitude > 0.05 && currentDampingFactor < 0.98) {
+        context.beginPath();
+        context.arc(circleCenterX, circleCenterY, fullReferenceRadius, 0, CONSTANTS.TWO_PI);
+        context.strokeStyle = 'rgba(180, 170, 160, 0.18)';
+        context.lineWidth = 1;
+        context.setLineDash([4, 5]);
+        context.stroke();
+        context.setLineDash([]);
+      }
+      
+      context.beginPath();
+      context.arc(circleCenterX, circleCenterY, activeDampedRadius, 0, CONSTANTS.TWO_PI);
+      context.strokeStyle = 'rgba(180, 170, 160, 0.45)';
+      context.lineWidth = 1.5;
+      context.setLineDash([6, 4]);
+      context.stroke();
+      context.setLineDash([]);
+      
+      const currentQuadrantStartAngle = Math.floor((currentWrappedAngle + phaseInRadians) / (Math.PI / 2)) * (Math.PI / 2);
+      context.beginPath();
+      context.moveTo(circleCenterX, circleCenterY);
+      context.arc(circleCenterX, circleCenterY, activeDampedRadius, -(currentQuadrantStartAngle + Math.PI / 2), -currentQuadrantStartAngle);
+      context.closePath();
+      context.fillStyle = convertHexToRgba(themeColor, 0.04);
+      context.fill();
+      
+      const innerArcRadius = Math.max(10, Math.min(28, baseRadius * 0.25));
+      context.beginPath();
+      context.arc(circleCenterX, circleCenterY, innerArcRadius, -(currentWrappedAngle + phaseInRadians), -phaseInRadians);
+      context.strokeStyle = convertHexToRgba(themeColor, 0.5);
+      context.lineWidth = 2.5;
+      context.stroke();
+      
+      const currentDegreesInteger = ((currentWrappedAngle * 180 / Math.PI) % 360).toFixed(0);
+      const labelRadiusPosition = innerArcRadius + 10;
+      const labelAnglePosition = -currentWrappedAngle / 2;
+      
+      context.font = "700 11px 'JetBrains Mono'";
+      context.fillStyle = themeColor;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(`${currentDegreesInteger}°`, circleCenterX + labelRadiusPosition * Math.cos(labelAnglePosition), circleCenterY + labelRadiusPosition * Math.sin(labelAnglePosition));
+      context.textBaseline = 'alphabetic';
+      
+      context.beginPath();
+      context.moveTo(circleCenterX, circleCenterY);
+      context.lineTo(tracingDotX, tracingDotY);
+      context.strokeStyle = 'rgba(59, 130, 246, 0.65)';
+      context.lineWidth = 2;
+      context.setLineDash([6, 3]);
+      context.stroke();
+      context.setLineDash([]);
+      
+      context.beginPath();
+      context.moveTo(tracingDotX, tracingDotY);
+      context.lineTo(tracingDotX, circleCenterY);
+      context.strokeStyle = convertHexToRgba(themeColor, 0.5);
+      context.lineWidth = 2;
+      context.setLineDash([3, 3]);
+      context.stroke();
+      context.setLineDash([]);
+      
+      if (Math.abs(currentSineValue) > 0.05) {
+        context.font = "600 9px 'JetBrains Mono'";
+        context.fillStyle = convertHexToRgba(themeColor, 0.8);
+        context.textAlign = 'left';
+        context.fillText(`sen=${currentSineValue.toFixed(2)}`, tracingDotX + 6, (tracingDotY + circleCenterY) / 2);
+      }
+      
+      context.font = "600 11px 'DM Sans'";
+      context.fillStyle = '#5C544D';
+      context.textAlign = 'center';
+      context.fillText('Círculo Unitario', circleCenterX, circleCenterY + baseRadius + 35);
+      
+      context.font = "400 9px 'JetBrains Mono'";
+      context.fillStyle = '#8A817A';
+      context.fillText(`A = ${(currentDampedAmplitude * 100).toFixed(0)}%`, circleCenterX, circleCenterY + baseRadius + 48);
+      
+      context.font = "500 8px 'JetBrains Mono'";
+      context.fillStyle = '#B0A89F';
+      context.textAlign = 'center';
+      context.fillText('0°', circleCenterX + activeDampedRadius + 14, circleCenterY + 3);
+      context.fillText('90°', circleCenterX, circleCenterY - activeDampedRadius - 6);
+      context.fillText('180°', circleCenterX - activeDampedRadius - 16, circleCenterY + 3);
+      context.fillText('270°', circleCenterX, circleCenterY + activeDampedRadius + 14);
+      
+      if (isFrictionEnabled && currentDampingFactor < 0.99) {
+        context.font = "500 8px 'JetBrains Mono'";
+        context.fillStyle = convertHexToRgba(themeColor, 0.55);
+        context.textAlign = 'center';
+        const dissipatedPercentage = Math.round((1 - currentDampingFactor) * 100);
+        context.fillText(`γ = ${dissipatedPercentage}% disipado`, circleCenterX, circleCenterY - baseRadius - 16);
+      }
+      
+      activeVisualDotX = tracingDotX;
+      activeVisualDotY = tracingDotY;
+      
+    } else {
+      const pendulumArmLength = Math.min(baseRadius * 0.85, canvasHeight * 0.17);
+      const pendulumBobRadius = Math.max(7, baseRadius * 0.14);
+      const pendulumPivotX = circleCenterX;
+      const pendulumPivotY = circleCenterY - pendulumArmLength - pendulumBobRadius * 2;
+      const horizontalSwingDistance = pendulumArmLength * 0.48 * (currentSineValue / Math.max(targetAmplitude, 0.01));
+      const activeBobPositionX = pendulumPivotX + horizontalSwingDistance;
+      const activeBobPositionY = pendulumPivotY + Math.sqrt(Math.max(0, pendulumArmLength * pendulumArmLength - horizontalSwingDistance * horizontalSwingDistance));
+      
+      context.fillStyle = 'rgba(110, 100, 90, 0.45)';
+      context.fillRect(pendulumPivotX - 22, pendulumPivotY - 6, 44, 6);
+      
+      for (let offset = -2; offset <= 2; offset++) {
+        context.beginPath();
+        context.moveTo(pendulumPivotX + offset * 8 - 3, pendulumPivotY - 6);
+        context.lineTo(pendulumPivotX + offset * 8 + 3, pendulumPivotY - 13);
+        context.strokeStyle = 'rgba(110, 100, 90, 0.25)';
+        context.lineWidth = 1.5;
+        context.stroke();
+      }
+      
+      if (isFrictionEnabled && targetAmplitude > 0.05 && currentDampingFactor < 0.98) {
+        const fullHorizontalSwing = pendulumArmLength * 0.48 * targetAmplitude / Math.max(targetAmplitude, 0.01);
+        const fullSwingAngle = Math.asin(Math.min(0.998, fullHorizontalSwing / pendulumArmLength));
+        context.beginPath();
+        context.arc(pendulumPivotX, pendulumPivotY, pendulumArmLength, Math.PI / 2 - fullSwingAngle, Math.PI / 2 + fullSwingAngle);
+        context.strokeStyle = convertHexToRgba(themeColor, 0.10);
+        context.lineWidth = 1.5;
+        context.setLineDash([5, 5]);
+        context.stroke();
+        context.setLineDash([]);
+      }
+      
+      const currentMaximumHorizontalSwing = pendulumArmLength * 0.48 * currentDampingFactor;
+      if (currentMaximumHorizontalSwing > 1) {
+        const currentSwingAngle = Math.asin(Math.min(0.998, currentMaximumHorizontalSwing / pendulumArmLength));
+        context.beginPath();
+        context.arc(pendulumPivotX, pendulumPivotY, pendulumArmLength, Math.PI / 2 - currentSwingAngle, Math.PI / 2 + currentSwingAngle);
+        context.strokeStyle = convertHexToRgba(themeColor, 0.15);
+        context.lineWidth = 1;
+        context.setLineDash([3, 4]);
+        context.stroke();
+        context.setLineDash([]);
+      }
+      
+      context.beginPath();
+      context.arc(pendulumPivotX, pendulumPivotY + pendulumArmLength, 3, 0, CONSTANTS.TWO_PI);
+      context.fillStyle = 'rgba(170, 160, 150, 0.3)';
+      context.fill();
+      
+      context.beginPath();
+      context.moveTo(pendulumPivotX, pendulumPivotY);
+      context.lineTo(activeBobPositionX, activeBobPositionY);
+      context.strokeStyle = 'rgba(80, 70, 60, 0.10)';
+      context.lineWidth = 4;
+      context.stroke();
+      
+      context.beginPath();
+      context.moveTo(pendulumPivotX, pendulumPivotY);
+      context.lineTo(activeBobPositionX, activeBobPositionY);
+      context.strokeStyle = 'rgba(90, 80, 70, 0.60)';
+      context.lineWidth = 2;
+      context.stroke();
+      
+      context.beginPath();
+      context.arc(pendulumPivotX, pendulumPivotY, 4, 0, CONSTANTS.TWO_PI);
+      context.fillStyle = 'rgba(90, 80, 70, 0.8)';
+      context.fill();
+      context.strokeStyle = 'rgba(50, 40, 30, 0.4)';
+      context.lineWidth = 1.5;
+      context.stroke();
+      
+      if (Math.abs(horizontalSwingDistance) > 3) {
+        context.beginPath();
+        context.moveTo(pendulumPivotX, activeBobPositionY);
+        context.lineTo(activeBobPositionX, activeBobPositionY);
+        context.strokeStyle = convertHexToRgba(themeColor, 0.32);
+        context.lineWidth = 1.5;
+        context.setLineDash([3, 3]);
+        context.stroke();
+        context.setLineDash([]);
+        
+        if (Math.abs(currentSineValue) > 0.07) {
+          context.font = "600 9px 'JetBrains Mono'";
+          context.fillStyle = convertHexToRgba(themeColor, 0.75);
+          context.textAlign = horizontalSwingDistance > 0 ? 'left' : 'right';
+          const textOffsetX = activeBobPositionX + (horizontalSwingDistance > 0 ? pendulumBobRadius + 4 : -pendulumBobRadius - 4);
+          context.fillText(`x=${currentSineValue.toFixed(2)}`, textOffsetX, activeBobPositionY - 4);
+        }
+      }
+      
+      const bobGradient = context.createRadialGradient(
+        activeBobPositionX - pendulumBobRadius * 0.32, 
+        activeBobPositionY - pendulumBobRadius * 0.32, 
+        pendulumBobRadius * 0.08, 
+        activeBobPositionX, 
+        activeBobPositionY, 
+        pendulumBobRadius
+      );
+      bobGradient.addColorStop(0, 'rgba(255, 255, 255, 0.92)');
+      bobGradient.addColorStop(0.28, convertHexToRgba(themeColor, 0.88));
+      bobGradient.addColorStop(1, convertHexToRgba(themeColor, 0.42));
+      
+      context.beginPath();
+      context.arc(activeBobPositionX, activeBobPositionY, pendulumBobRadius, 0, CONSTANTS.TWO_PI);
+      context.fillStyle = bobGradient;
+      context.fill();
+      context.strokeStyle = themeColor;
+      context.lineWidth = 2.5;
+      context.stroke();
+      
+      context.beginPath();
+      context.arc(activeBobPositionX - pendulumBobRadius * 0.32, activeBobPositionY - pendulumBobRadius * 0.32, pendulumBobRadius * 0.28, 0, CONSTANTS.TWO_PI);
+      context.fillStyle = 'rgba(255, 255, 255, 0.30)';
+      context.fill();
+      
+      const labelBaseY = pendulumPivotY - 16;
+      if (isFrictionEnabled && currentDampingFactor < 0.99) {
+        context.font = "500 8px 'JetBrains Mono'";
+        context.fillStyle = convertHexToRgba(themeColor, 0.55);
+        context.textAlign = 'center';
+        const dissipatedPercentage = Math.round((1 - currentDampingFactor) * 100);
+        context.fillText(`γ = ${dissipatedPercentage}% disipado`, circleCenterX, labelBaseY - 24);
+      }
+      
+      context.font = "400 9px 'JetBrains Mono'";
+      context.fillStyle = '#8A817A';
+      context.textAlign = 'center';
+      context.fillText(`A = ${(currentDampedAmplitude * 100).toFixed(0)}%`, circleCenterX, labelBaseY - 12);
+      
+      context.font = "600 11px 'DM Sans'";
+      context.fillStyle = '#5C544D';
+      context.textAlign = 'center';
+      context.fillText('Péndulo Simple', circleCenterX, labelBaseY);
+      
+      activeVisualDotX = activeBobPositionX;
+      activeVisualDotY = activeBobPositionY;
+    }
+    
+    context.beginPath();
+    context.setLineDash(lineDashStyle);
+    for (let index = 0; index <= 500; index++) {
+      const stepRatio = index / 500;
+      const iterationAngle = stepRatio * totalRotationAngle;
+      const xPosition = waveformStartX + stepRatio * waveformWidth;
+      const iterationDamping = isFrictionEnabled ? Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * stepRatio) : 1;
+      const yPosition = circleCenterY - waveformAmplitudePixels * targetAmplitude * iterationDamping * Math.sin(iterationAngle + phaseInRadians);
+      
+      if (index === 0) {
+        context.moveTo(xPosition, yPosition);
+      } else {
+        context.lineTo(xPosition, yPosition);
+      }
+    }
+    context.strokeStyle = convertHexToRgba(themeColor, 0.12);
+    context.lineWidth = 1.5;
+    context.stroke();
+    context.setLineDash([]);
+    
+    if (isFrictionEnabled && targetAmplitude > 0.01) {
+      context.setLineDash([5, 4]);
+      context.lineWidth = 1;
+      context.strokeStyle = convertHexToRgba(themeColor, 0.28);
+      
+      context.beginPath();
+      for (let index = 0; index <= 300; index++) {
+        const stepRatio = index / 300;
+        const xPosition = waveformStartX + stepRatio * waveformWidth;
+        const envelopeValue = waveformAmplitudePixels * targetAmplitude * Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * stepRatio);
+        if (index === 0) context.moveTo(xPosition, circleCenterY - envelopeValue);
+        else context.lineTo(xPosition, circleCenterY - envelopeValue);
+      }
+      context.stroke();
+      
+      context.beginPath();
+      for (let index = 0; index <= 300; index++) {
+        const stepRatio = index / 300;
+        const xPosition = waveformStartX + stepRatio * waveformWidth;
+        const envelopeValue = waveformAmplitudePixels * targetAmplitude * Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * stepRatio);
+        if (index === 0) context.moveTo(xPosition, circleCenterY + envelopeValue);
+        else context.lineTo(xPosition, circleCenterY + envelopeValue);
+      }
+      context.stroke();
+      context.setLineDash([]);
+    }
+    
+    if (currentProgress > 0.001) {
+      const activeLineSegments = Math.max(100, Math.round(500 * currentProgress));
+      
+      context.beginPath();
+      context.setLineDash(lineDashStyle);
+      for (let index = 0; index <= activeLineSegments; index++) {
+        const stepRatio = index / activeLineSegments;
+        const activeAngle = stepRatio * currentAbsoluteAngle;
+        const xPosition = waveformStartX + (activeAngle / totalRotationAngle) * waveformWidth;
+        const iterationDamping = isFrictionEnabled ? Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * (activeAngle / totalRotationAngle)) : 1;
+        const yPosition = circleCenterY - waveformAmplitudePixels * targetAmplitude * iterationDamping * Math.sin(activeAngle + phaseInRadians);
+        
+        if (xPosition > waveformEndX) break;
+        if (index === 0) context.moveTo(xPosition, yPosition);
+        else context.lineTo(xPosition, yPosition);
+      }
+      context.strokeStyle = convertHexToRgba(themeColor, 0.85);
+      context.lineWidth = 2.5;
+      context.stroke();
+      context.setLineDash([]);
+      
+      context.beginPath();
+      for (let index = 0; index <= activeLineSegments; index++) {
+        const stepRatio = index / activeLineSegments;
+        const activeAngle = stepRatio * currentAbsoluteAngle;
+        const xPosition = waveformStartX + (activeAngle / totalRotationAngle) * waveformWidth;
+        const iterationDamping = isFrictionEnabled ? Math.exp(-CONSTANTS.DAMPING_COEFFICIENT * (activeAngle / totalRotationAngle)) : 1;
+        const yPosition = circleCenterY - waveformAmplitudePixels * targetAmplitude * iterationDamping * Math.sin(activeAngle + phaseInRadians);
+        
+        if (xPosition > waveformEndX) break;
+        if (index === 0) context.moveTo(xPosition, yPosition);
+        else context.lineTo(xPosition, yPosition);
+      }
+      
+      const terminalX = Math.min(waveformEndX, waveformStartX + (currentAbsoluteAngle / totalRotationAngle) * waveformWidth);
+      context.lineTo(terminalX, circleCenterY);
+      context.lineTo(waveformStartX, circleCenterY);
+      context.closePath();
+      context.fillStyle = convertHexToRgba(themeColor, 0.06);
+      context.fill();
+    }
+    
+    const activeWaveformX = waveformStartX + (currentAbsoluteAngle / totalRotationAngle) * waveformWidth;
+    const activeWaveformY = circleCenterY - waveformAmplitudePixels * currentSineValue;
+    
+    if (activeWaveformX <= waveformEndX + 5) {
+      context.beginPath();
+      context.moveTo(activeVisualDotX, activeVisualDotY);
+      context.lineTo(Math.min(activeWaveformX, waveformEndX), activeWaveformY);
+      context.strokeStyle = convertHexToRgba(themeColor, 0.35);
+      context.lineWidth = 1.2;
+      context.setLineDash([5, 4]);
+      context.stroke();
+      context.setLineDash([]);
+    }
+    
+    context.beginPath();
+    context.arc(activeVisualDotX, activeVisualDotY, 6, 0, CONSTANTS.TWO_PI);
+    context.fillStyle = '#fff';
+    context.fill();
+    context.strokeStyle = themeColor;
+    context.lineWidth = 2.5;
+    context.stroke();
+    
+    if (activeWaveformX <= waveformEndX + 5) {
+      const constrainedWaveX = Math.min(activeWaveformX, waveformEndX);
+      context.beginPath();
+      context.arc(constrainedWaveX, activeWaveformY, 16, 0, CONSTANTS.TWO_PI);
+      
+      const glowingEffect = context.createRadialGradient(constrainedWaveX, activeWaveformY, 3, constrainedWaveX, activeWaveformY, 16);
+      glowingEffect.addColorStop(0, convertHexToRgba(themeColor, 0.2));
+      glowingEffect.addColorStop(1, convertHexToRgba(themeColor, 0));
+      context.fillStyle = glowingEffect;
+      context.fill();
+      
+      context.beginPath();
+      context.arc(constrainedWaveX, activeWaveformY, 6, 0, CONSTANTS.TWO_PI);
+      context.fillStyle = '#fff';
+      context.fill();
+      context.strokeStyle = themeColor;
+      context.lineWidth = 2.5;
+      context.stroke();
+    }
+    
+    const displayDegreesValue = (currentWrappedAngle * 180 / Math.PI) % 360;
+    const totalDegreesValue = currentAbsoluteAngle * 180 / Math.PI;
+    
+    displayAngle.textContent = `${displayDegreesValue.toFixed(1)}° (${totalDegreesValue.toFixed(0)}° total)`;
+    displaySine.textContent = currentSineValue.toFixed(3);
+    displayLevel.textContent = `${Math.round(currentSineValue * 100)} %`;
+    displayDecibels.textContent = calculateDecibelsFS(currentSineValue);
+    displayTime.textContent = `${(currentElapsedTime * 1000).toFixed(3)} ms`;
+    displayCycle.textContent = `${activeCycleNumber}/${visibleCycles}`;
+    
+    progressFillBar.style.width = `${currentProgress * 100}%`;
+    progressPercentageText.textContent = `${(currentProgress * 100).toFixed(1)}%`;
+    progressMaximumText.textContent = `${visibleCycles * 360}°`;
+    
+    updateCycleDotsState(settings, currentProgress);
+    
+    if (isPlaying && !hasFinished) {
+      const progressIncrement = (animationSpeed / 120) / visibleCycles;
+      
+      if (playbackMode === 'once') {
+        currentProgress += progressIncrement;
+        if (currentProgress >= 1) {
+          currentProgress = 1;
+          hasFinished = true;
+          isPlaying = false;
+          updateTransportStatusUI(settings);
+        }
+      } else if (playbackMode === 'loop') {
+        currentProgress += progressIncrement;
+        if (currentProgress >= 1) currentProgress = 0;
+      } else if (playbackMode === 'bounce') {
+        currentProgress += progressIncrement * playbackDirection;
+        if (currentProgress >= 1) {
+          currentProgress = 1;
+          playbackDirection = -1;
+        } else if (currentProgress <= 0) {
+          currentProgress = 0;
+          playbackDirection = 1;
+        }
+      }
+    }
+    
+    requestAnimationFrame(renderAnimationLoop);
+  }
+
+  function modifyProgressByDegrees(degreeChange) {
+    const settings = getCurrentSettings();
+    const totalSimulationDegrees = settings.visibleCycles * 360;
+    
+    isPlaying = false;
+    hasFinished = false;
+    currentProgress = clampBetweenZeroAndOne(currentProgress + degreeChange / totalSimulationDegrees);
+    
+    if (currentProgress >= 1 && settings.playbackMode === 'once') {
+      currentProgress = 1;
+      hasFinished = true;
+    }
+    updateTransportStatusUI(getCurrentSettings());
+  }
+
+  function resetPlaybackToStart() {
+    currentProgress = 0;
+    hasFinished = false;
+    playbackDirection = 1;
+    updateTransportStatusUI(getCurrentSettings());
+  }
+
+  function skipPlaybackToEnd() {
+    currentProgress = 1;
+    if (getCurrentSettings().playbackMode === 'once') {
+      hasFinished = true;
+      isPlaying = false;
+    }
+    updateTransportStatusUI(getCurrentSettings());
+  }
+
+  function togglePlaybackState() {
+    if (hasFinished) {
+      currentProgress = 0;
+      hasFinished = false;
+      playbackDirection = 1;
+      isPlaying = true;
+    } else {
+      isPlaying = !isPlaying;
+    }
+    updateTransportStatusUI(getCurrentSettings());
+  }
+
+  function updateProgressFromMouseDrag(event) {
+    const trackingBarRect = getElementById('progressBar').getBoundingClientRect();
+    currentProgress = clampBetweenZeroAndOne((event.clientX - trackingBarRect.left) / trackingBarRect.width);
+    hasFinished = false;
+    
+    if (getCurrentSettings().playbackMode === 'once' && currentProgress >= 1) {
+      hasFinished = true;
+      isPlaying = false;
+    }
+    updateTransportStatusUI(getCurrentSettings());
+  }
+
+  function beginSteppingSequence(degreeChange) {
+    modifyProgressByDegrees(degreeChange);
+    steppingIntervalId = setInterval(() => modifyProgressByDegrees(degreeChange), 80);
+  }
+
+  function endSteppingSequence() {
+    if (steppingIntervalId) {
+      clearInterval(steppingIntervalId);
+      steppingIntervalId = null;
+    }
+  }
+
+  function refreshDidacticInfoTag() {
+    const infoContainer = getElementById('sineInfoTag');
+    const frictionNote = isFrictionEnabled ? '<br><em>Con rozamiento activo, la amplitud decae exponencialmente con el tiempo.</em>' : '';
+    
+    if (visualizationMode === 'circle') {
+      infoContainer.innerHTML = `<strong>🎓 Nota Didáctica:</strong><br>El punto rota en el círculo unitario. Su proyección vertical genera una función senoidal. Observá cómo el radio se contrae con el rozamiento activado, representando la disipación de Energia.${frictionNote}`;
+    } else {
+      infoContainer.innerHTML = `<strong>🎓 Nota Didáctica:</strong><br>El péndulo oscila en Movimiento Armónico Simple. Su desplazamiento horizontal genera la función senoidal.${frictionNote}`;
+    }
+  }
+
+  window.addEventListener('resize', handleCanvasResize);
+  window.addEventListener('mousemove', event => {
+    if (isDraggingProgress) updateProgressFromMouseDrag(event);
+  });
+  window.addEventListener('mouseup', () => {
+    isDraggingProgress = false;
+    endSteppingSequence();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+    if (!getElementById('tabSine').classList.contains('active')) return;
+    
+    switch (event.code) {
+      case 'Space':
+        event.preventDefault();
+        togglePlaybackState();
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        modifyProgressByDegrees(event.shiftKey ? 10 : 1);
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        modifyProgressByDegrees(event.shiftKey ? -10 : -1);
+        break;
+      case 'Home':
+        event.preventDefault();
+        resetPlaybackToStart();
+        break;
+      case 'End':
+        event.preventDefault();
+        skipPlaybackToEnd();
+        break;
+    }
+  });
+
+  getElementById('btnPlay').addEventListener('click', togglePlaybackState);
+  getElementById('btnStepBack').addEventListener('click', () => modifyProgressByDegrees(-1));
+  getElementById('btnStepFwd').addEventListener('click', () => modifyProgressByDegrees(1));
+  getElementById('btnStart').addEventListener('click', resetPlaybackToStart);
+  getElementById('btnEnd').addEventListener('click', skipPlaybackToEnd);
+  
+  getElementById('btnReset').addEventListener('click', () => {
+    currentProgress = 0;
+    hasFinished = false;
+    playbackDirection = 1;
+    isPlaying = true;
+    updateTransportStatusUI(getCurrentSettings());
+  });
+
+  getElementById('progressBar').addEventListener('mousedown', event => {
+    isDraggingProgress = true;
+    isPlaying = false;
+    updateProgressFromMouseDrag(event);
+  });
+
+  getElementById('btnStepFwd').addEventListener('mousedown', () => beginSteppingSequence(1));
+  getElementById('btnStepBack').addEventListener('mousedown', () => beginSteppingSequence(-1));
+
+  getElementById('btnImg').addEventListener('click', () => {
+    const tempCanvas = document.createElement('canvas');
+    const tempContext = tempCanvas.getContext('2d');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    
+    tempContext.fillStyle = '#FDF8F3';
+    tempContext.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    tempContext.drawImage(canvas, 0, 0);
+    
+    const downloadLink = document.createElement('a');
+    downloadLink.download = `verio_senoidal_${new Date().toISOString().slice(0, 10)}.png`;
+    downloadLink.href = tempCanvas.toDataURL();
+    downloadLink.click();
+  });
+
+  document.querySelectorAll('#freq, #level, #phase, #cycles').forEach(inputElement => {
+    inputElement.addEventListener('change', () => {
+      currentProgress = 0;
+      hasFinished = false;
+      playbackDirection = 1;
+      renderCycleDots(getCurrentSettings().visibleCycles);
+      updateTransportStatusUI(getCurrentSettings());
+    });
+  });
+
+  getElementById('animMode').addEventListener('change', () => {
+    hasFinished = false;
+    playbackDirection = 1;
+    if (!isPlaying) {
+      isPlaying = true;
+      currentProgress = 0;
+    }
+    updateTransportStatusUI(getCurrentSettings());
+  });
+
+  getElementById('modeCircle').addEventListener('click', () => {
+    visualizationMode = 'circle';
+    getElementById('modeCircle').classList.add('on');
+    getElementById('modePendulum').classList.remove('on');
+    refreshDidacticInfoTag();
+  });
+
+  getElementById('modePendulum').addEventListener('click', () => {
+    visualizationMode = 'pendulum';
+    getElementById('modePendulum').classList.add('on');
+    getElementById('modeCircle').classList.remove('on');
+    refreshDidacticInfoTag();
+  });
+
+  getElementById('frictionChip').addEventListener('click', () => {
+    isFrictionEnabled = !isFrictionEnabled;
+    const toggleChip = getElementById('frictionChip');
+    
+    if (isFrictionEnabled) {
+      toggleChip.classList.add('on');
+      toggleChip.textContent = '〜 Rozamiento: ON';
+    } else {
+      toggleChip.classList.remove('on');
+      toggleChip.textContent = '〜 Rozamiento: OFF';
+    }
+    refreshDidacticInfoTag();
+  });
+
+  handleCanvasResize();
+  renderCycleDots(getCurrentSettings().visibleCycles);
+  updateTransportStatusUI(getCurrentSettings());
+  refreshDidacticInfoTag();
+  requestAnimationFrame(renderAnimationLoop);
+}
+
+function initializeLongitudinalSimulation() {
+  const simulationCanvas = getElementById('lwCanvas');
+  const simulationContext = simulationCanvas.getContext('2d');
+  
+  let pixelRatio = 1;
+  let isPlaying = true;
+  let simulationTime = 0;
+  let lastFrameTime = 0;
+  let activeParticles = [];
+  let previousDensityState = 0;
+  let previousWavelengthState = 0;
+  
+  const visiblePanels = { 
+    particles: true, 
+    displacement: true, 
+    pressure: true 
+  };
+
+  function getCurrentParameters() {
+    const densityMapping = { low: 12, med: 20, high: 30 };
+    return {
+      frequency: parseFloat(getElementById('lwFreq').value) || 2,
+      amplitudeScale: (parseFloat(getElementById('lwAmp').value) || 80) / 100,
+      wavelengthsCount: parseInt(getElementById('lwWavelengths').value) || 2,
+      playbackSpeed: parseFloat(getElementById('lwSpeed').value) || 1.0,
+      particleDensity: densityMapping[getElementById('lwDensity').value] || 20,
+      guidelinesMode: getElementById('lwGuides').value
+    };
+  }
+
+  function handleContainerResize() {
+    const containerRect = simulationCanvas.parentElement.getBoundingClientRect();
+    pixelRatio = window.devicePixelRatio || 1;
+    simulationCanvas.width = containerRect.width * pixelRatio;
+    simulationCanvas.height = containerRect.height * pixelRatio;
+    simulationCanvas.style.width = `${containerRect.width}px`;
+    simulationCanvas.style.height = `${containerRect.height}px`;
+  }
+
+  function generateParticleGrid(columns, rows, startX, endX, startY, endY) {
+    const generatedPoints = [];
+    const spacingX = (endX - startX) / columns;
+    const spacingY = (endY - startY) / rows;
+    
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+        generatedPoints.push({
+          baseX: startX + (col + 0.5) * spacingX,
+          baseY: startY + (row + 0.5) * spacingY,
+          offsetX: (Math.random() - 0.5) * spacingX * 0.5,
+          offsetY: (Math.random() - 0.5) * spacingY * 0.5,
+          radiusSize: 2 + Math.random() * 1.8
+        });
+      }
+    }
+    return generatedPoints;
+  }
+
+  function updateTransportStatusUI() {
+    const statusPill = getElementById('lwStatusPill');
+    const statusLabel = getElementById('lwTransportLabel');
+    const actionIcon = getElementById('lwIconPlay');
+    const headerBadge = getElementById('statusBadge');
+    
+    if (isPlaying) {
+      statusPill.textContent = '▶ PLAY';
+      statusPill.className = 'status-pill playing';
+      statusLabel.textContent = '▶ REPRODUCIENDO';
+      actionIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14l8-7z"/>';
+      getElementById('lwBtnPlayPause').classList.add('active');
+      headerBadge.textContent = 'EN VIVO';
+    } else {
+      statusPill.textContent = '⏸ PAUSA';
+      statusPill.className = 'status-pill paused';
+      statusLabel.textContent = '⏸ EN PAUSA';
+      actionIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+      getElementById('lwBtnPlayPause').classList.remove('active');
+      headerBadge.textContent = 'PAUSA';
+    }
+  }
+
+  function renderSimulationFrame(timestamp) {
+    if (!lastFrameTime) {
+      lastFrameTime = timestamp;
+    }
+    const deltaTime = (timestamp - lastFrameTime) / 1000;
+    lastFrameTime = timestamp;
+
+    if (!getElementById('tabLongitudinal').classList.contains('active')) {
+      requestAnimationFrame(renderSimulationFrame);
+      return;
+    }
+
+    const { frequency, amplitudeScale, wavelengthsCount, playbackSpeed, particleDensity, guidelinesMode } = getCurrentParameters();
+    
+    if (isPlaying) {
+      simulationTime += deltaTime * playbackSpeed;
+    }
+
+    if (simulationCanvas.width < 10 || simulationCanvas.height < 10) {
+      handleContainerResize();
+    }
+
+    simulationContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    const canvasWidth = simulationCanvas.width / pixelRatio;
+    const canvasHeight = simulationCanvas.height / pixelRatio;
+    simulationContext.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    const activePanelsCount = [visiblePanels.particles, visiblePanels.displacement, visiblePanels.pressure].filter(Boolean).length;
+    
+    if (activePanelsCount === 0) {
+      simulationContext.font = "500 14px 'DM Sans'";
+      simulationContext.fillStyle = '#8A817A';
+      simulationContext.textAlign = 'center';
+      simulationContext.fillText('Activá al menos un panel para visualizar', canvasWidth / 2, canvasHeight / 2);
+      requestAnimationFrame(renderSimulationFrame);
+      return;
+    }
+
+    const layoutMargins = { top: 24, bottom: 16, left: 55, right: 35 };
+    const panelGap = 20;
+    const availableHeight = canvasHeight - layoutMargins.top - layoutMargins.bottom - panelGap * (activePanelsCount - 1);
+    const panelHeight = availableHeight / activePanelsCount;
+    
+    const plotStartX = layoutMargins.left;
+    const plotEndX = canvasWidth - layoutMargins.right;
+    const plotWidth = plotEndX - plotStartX;
+    
+    const waveNumber = CONSTANTS.TWO_PI * wavelengthsCount / plotWidth;
+    const angularFrequency = CONSTANTS.TWO_PI * frequency;
+    const currentPhase = angularFrequency * simulationTime;
+    
+    const displayAmplitudePixels = panelHeight * 0.36 * amplitudeScale;
+    const wavelengthPixels = plotWidth / wavelengthsCount;
+
+    let currentPanelIndex = 0;
+    const activeSectionLetters = [];
+    if (visiblePanels.particles) activeSectionLetters.push('a');
+    if (visiblePanels.displacement) activeSectionLetters.push('b');
+    if (visiblePanels.pressure) activeSectionLetters.push('c');
+
+    function calculatePanelCenterY(index) {
+      return layoutMargins.top + index * (panelHeight + panelGap) + panelHeight / 2;
+    }
+
+    function drawHorizontalBaseline(centerY) {
+      simulationContext.strokeStyle = 'rgba(180, 170, 160, 0.5)';
+      simulationContext.lineWidth = 1;
+      simulationContext.setLineDash([5, 4]);
+      simulationContext.beginPath();
+      simulationContext.moveTo(plotStartX, centerY);
+      simulationContext.lineTo(plotEndX, centerY);
+      simulationContext.stroke();
+      simulationContext.setLineDash([]);
+    }
+
+    function drawVerticalAxisLabel(centerY, labelText) {
+      simulationContext.save();
+      simulationContext.translate(15, centerY);
+      simulationContext.rotate(-Math.PI / 2);
+      simulationContext.font = "600 9px 'DM Sans'";
+      simulationContext.fillStyle = '#8A817A';
+      simulationContext.textAlign = 'center';
+      simulationContext.fillText(labelText, 0, 0);
+      simulationContext.restore();
+    }
+
+    function drawSectionIdentifier(centerY, letterText) {
+      simulationContext.font = "700 15px 'DM Sans'";
+      simulationContext.fillStyle = 'rgba(44, 36, 32, 0.25)';
+      simulationContext.textAlign = 'left';
+      simulationContext.fillText(letterText, plotStartX - 38, centerY - panelHeight * 0.34);
+    }
+
+    function drawVerticalGuidelines(centerY) {
+      if (guidelinesMode === 'none') return;
+      
+      simulationContext.setLineDash([3, 5]);
+      simulationContext.lineWidth = 0.6;
+      
+      for (let index = 0; index <= wavelengthsCount * 2; index++) {
+        const guideX = plotStartX + (index / (wavelengthsCount * 2)) * plotWidth;
+        
+        if (guidelinesMode === 'nodes' && index % 2 !== 0) continue;
+        
+        simulationContext.strokeStyle = (index % 2 === 0) ? 'rgba(180, 170, 160, 0.4)' : 'rgba(212, 200, 188, 0.3)';
+        simulationContext.beginPath();
+        simulationContext.moveTo(guideX, centerY - panelHeight * 0.44);
+        simulationContext.lineTo(guideX, centerY + panelHeight * 0.44);
+        simulationContext.stroke();
+      }
+      simulationContext.setLineDash([]);
+    }
+
+    if (visiblePanels.particles) {
+      const panelCenterY = calculatePanelCenterY(currentPanelIndex);
+      const boundingTop = panelCenterY - panelHeight / 2;
+      const boundingBottom = panelCenterY + panelHeight / 2;
+      
+      drawSectionIdentifier(panelCenterY, activeSectionLetters[currentPanelIndex]);
+      drawHorizontalBaseline(panelCenterY);
+      drawVerticalGuidelines(panelCenterY);
+
+      simulationContext.fillStyle = '#2C2420';
+      const sourceX = plotStartX - 6;
+      simulationContext.beginPath();
+      simulationContext.moveTo(sourceX - 10, panelCenterY - 12);
+      simulationContext.lineTo(sourceX - 10, panelCenterY + 12);
+      simulationContext.lineTo(sourceX - 3, panelCenterY + 12);
+      simulationContext.lineTo(sourceX + 5, panelCenterY + 18);
+      simulationContext.lineTo(sourceX + 5, panelCenterY - 18);
+      simulationContext.lineTo(sourceX - 3, panelCenterY - 12);
+      simulationContext.closePath();
+      simulationContext.fill();
+
+      if (activeParticles.length === 0 || previousDensityState !== particleDensity || previousWavelengthState !== wavelengthsCount) {
+        const gridColumns = Math.round(particleDensity * 1.6);
+        const gridRows = Math.max(4, Math.round(particleDensity * 0.45));
+        activeParticles = generateParticleGrid(gridColumns, gridRows, plotStartX + 2, plotEndX - 2, boundingTop + 10, boundingBottom - 10);
+        previousDensityState = particleDensity;
+        previousWavelengthState = wavelengthsCount;
+      }
+
+      for (const particle of activeParticles) {
+        const waveDisplacement = displayAmplitudePixels * 0.5 * Math.sin(waveNumber * (particle.baseX - plotStartX) - currentPhase);
+        const drawPositionX = particle.baseX + particle.offsetX + waveDisplacement;
+        const drawPositionY = particle.baseY + particle.offsetY;
+        const localPressure = -Math.cos(waveNumber * (particle.baseX - plotStartX) - currentPhase);
+        
+        let particleColor;
+        if (localPressure > 0.05) {
+          particleColor = convertHexToRgba('#B85C50', 0.2 + 0.7 * localPressure);
+        } else if (localPressure < -0.05) {
+          particleColor = convertHexToRgba('#3B6B8F', 0.2 + 0.7 * Math.abs(localPressure));
+        } else {
+          particleColor = 'rgba(44, 36, 32, 0.45)';
+        }
+        
+        simulationContext.beginPath();
+        simulationContext.arc(drawPositionX, drawPositionY, particle.radiusSize, 0, CONSTANTS.TWO_PI);
+        simulationContext.fillStyle = particleColor;
+        simulationContext.fill();
+      }
+
+      simulationContext.font = "500 9px 'DM Sans'";
+      simulationContext.fillStyle = '#B0A89F';
+      simulationContext.textAlign = 'right';
+      simulationContext.fillText('Dirección de propagación →', plotEndX, boundingTop + 13);
+
+      simulationContext.font = "700 9px 'JetBrains Mono'";
+      simulationContext.textAlign = 'center';
+      
+      for (let index = 0; index < wavelengthsCount * 2; index++) {
+        const textCenterX = plotStartX + (index + 0.5) / (wavelengthsCount * 2) * plotWidth;
+        const pressureValue = -Math.cos(waveNumber * (textCenterX - plotStartX) - currentPhase);
+        
+        if (Math.abs(pressureValue) > 0.4) {
+          simulationContext.fillStyle = pressureValue > 0 ? convertHexToRgba('#B85C50', 0.45) : convertHexToRgba('#3B6B8F', 0.45);
+          simulationContext.fillText(pressureValue > 0 ? 'C' : 'R', textCenterX, boundingBottom - 3);
+        }
+      }
+
+      drawVerticalAxisLabel(panelCenterY, 'Partículas');
+      currentPanelIndex++;
+    }
+
+    if (visiblePanels.displacement) {
+      const panelCenterY = calculatePanelCenterY(currentPanelIndex);
+      
+      drawSectionIdentifier(panelCenterY, activeSectionLetters[currentPanelIndex]);
+      drawHorizontalBaseline(panelCenterY);
+      drawVerticalGuidelines(panelCenterY);
+
+      simulationContext.setLineDash([3, 5]);
+      simulationContext.strokeStyle = 'rgba(155, 176, 143, 0.3)';
+      simulationContext.lineWidth = 0.6;
+      simulationContext.beginPath();
+      simulationContext.moveTo(plotStartX, panelCenterY - displayAmplitudePixels);
+      simulationContext.lineTo(plotEndX, panelCenterY - displayAmplitudePixels);
+      simulationContext.moveTo(plotStartX, panelCenterY + displayAmplitudePixels);
+      simulationContext.lineTo(plotEndX, panelCenterY + displayAmplitudePixels);
+      simulationContext.stroke();
+      simulationContext.setLineDash([]);
+
+      simulationContext.font = "400 8px 'JetBrains Mono'";
+      simulationContext.fillStyle = '#B0A89F';
+      simulationContext.textAlign = 'right';
+      simulationContext.fillText('+A', plotStartX - 5, panelCenterY - displayAmplitudePixels + 3);
+      simulationContext.fillText('0', plotStartX - 5, panelCenterY + 3);
+      simulationContext.fillText('−A', plotStartX - 5, panelCenterY + displayAmplitudePixels + 3);
+
+      simulationContext.beginPath();
+      for (let offsetX = 0; offsetX <= plotWidth; offsetX++) {
+        const waveValue = Math.sin(waveNumber * offsetX - currentPhase);
+        const targetX = plotStartX + offsetX;
+        const targetY = panelCenterY - displayAmplitudePixels * waveValue;
+        
+        if (offsetX === 0) {
+          simulationContext.moveTo(targetX, targetY);
+        } else {
+          simulationContext.lineTo(targetX, targetY);
+        }
+      }
+      simulationContext.strokeStyle = '#7A9A6D';
+      simulationContext.lineWidth = 2.5;
+      simulationContext.stroke();
+
+      simulationContext.beginPath();
+      for (let offsetX = 0; offsetX <= plotWidth; offsetX++) {
+        const waveValue = Math.sin(waveNumber * offsetX - currentPhase);
+        simulationContext.lineTo(plotStartX + offsetX, panelCenterY - displayAmplitudePixels * waveValue);
+      }
+      simulationContext.lineTo(plotEndX, panelCenterY);
+      simulationContext.lineTo(plotStartX, panelCenterY);
+      simulationContext.closePath();
+      simulationContext.fillStyle = convertHexToRgba('#7A9A6D', 0.07);
+      simulationContext.fill();
+
+      if (wavelengthsCount >= 1) {
+        const dimensionY = panelCenterY + displayAmplitudePixels + 14;
+        const startWavelengthIndex = Math.floor(wavelengthsCount / 2);
+        const dimensionStartX = plotStartX + startWavelengthIndex * wavelengthPixels;
+        const dimensionEndX = dimensionStartX + wavelengthPixels;
+        
+        simulationContext.strokeStyle = '#5C544D';
+        simulationContext.lineWidth = 1.2;
+        simulationContext.setLineDash([]);
+        simulationContext.beginPath();
+        simulationContext.moveTo(dimensionStartX, dimensionY - 4);
+        simulationContext.lineTo(dimensionStartX, dimensionY);
+        simulationContext.lineTo(dimensionEndX, dimensionY);
+        simulationContext.lineTo(dimensionEndX, dimensionY - 4);
+        simulationContext.stroke();
+        
+        simulationContext.font = "600 10px 'DM Sans'";
+        simulationContext.fillStyle = '#5C544D';
+        simulationContext.textAlign = 'center';
+        simulationContext.fillText('λ (Longitud de Onda)', (dimensionStartX + dimensionEndX) / 2, dimensionY + 12);
+      }
+
+      simulationContext.font = "400 8px 'JetBrains Mono'";
+      simulationContext.fillStyle = '#8A817A';
+      simulationContext.textAlign = 'left';
+      
+      for (let index = 0; index < wavelengthsCount * 2; index++) {
+        const potentialNodeX = plotStartX + (index + 0.5) * wavelengthPixels;
+        if (potentialNodeX > plotStartX + 30 && potentialNodeX < plotEndX - 30) {
+          const waveValueAtNode = Math.sin(waveNumber * (potentialNodeX - plotStartX) - currentPhase);
+          if (Math.abs(waveValueAtNode) < 0.15) {
+            simulationContext.textAlign = 'center';
+            simulationContext.fillText('Nodo', potentialNodeX, panelCenterY - displayAmplitudePixels - 5);
+            break;
+          }
+        }
+      }
+
+      drawVerticalAxisLabel(panelCenterY, 'Desplazamiento');
+      currentPanelIndex++;
+    }
+
+    if (visiblePanels.pressure) {
+      const panelCenterY = calculatePanelCenterY(currentPanelIndex);
+      
+      drawSectionIdentifier(panelCenterY, activeSectionLetters[currentPanelIndex]);
+      drawHorizontalBaseline(panelCenterY);
+      drawVerticalGuidelines(panelCenterY);
+
+      simulationContext.setLineDash([3, 5]);
+      simulationContext.strokeStyle = 'rgba(107, 45, 62, 0.2)';
+      simulationContext.lineWidth = 0.6;
+      simulationContext.beginPath();
+      simulationContext.moveTo(plotStartX, panelCenterY - displayAmplitudePixels);
+      simulationContext.lineTo(plotEndX, panelCenterY - displayAmplitudePixels);
+      simulationContext.moveTo(plotStartX, panelCenterY + displayAmplitudePixels);
+      simulationContext.lineTo(plotEndX, panelCenterY + displayAmplitudePixels);
+      simulationContext.stroke();
+      simulationContext.setLineDash([]);
+
+      simulationContext.font = "400 8px 'JetBrains Mono'";
+      simulationContext.fillStyle = '#B0A89F';
+      simulationContext.textAlign = 'right';
+      simulationContext.fillText('+P', plotStartX - 5, panelCenterY - displayAmplitudePixels + 3);
+      simulationContext.fillText('P₀', plotStartX - 5, panelCenterY + 3);
+      simulationContext.fillText('−P', plotStartX - 5, panelCenterY + displayAmplitudePixels + 3);
+
+      simulationContext.textAlign = 'left';
+      simulationContext.font = "400 7px 'JetBrains Mono'";
+      simulationContext.fillStyle = '#B0A89F';
+      simulationContext.fillText('↑ Sobre amb.', plotEndX + 3, panelCenterY - displayAmplitudePixels + 3);
+      simulationContext.fillText('↓ Bajo amb.', plotEndX + 3, panelCenterY + displayAmplitudePixels + 3);
+
+      simulationContext.beginPath();
+      for (let offsetX = 0; offsetX <= plotWidth; offsetX++) {
+        const pressureValue = -Math.cos(waveNumber * offsetX - currentPhase);
+        const targetX = plotStartX + offsetX;
+        const targetY = panelCenterY - displayAmplitudePixels * pressureValue;
+        
+        if (offsetX === 0) {
+          simulationContext.moveTo(targetX, targetY);
+        } else {
+          simulationContext.lineTo(targetX, targetY);
+        }
+      }
+      simulationContext.strokeStyle = '#6B2D3E';
+      simulationContext.lineWidth = 2.5;
+      simulationContext.stroke();
+
+      simulationContext.beginPath();
+      simulationContext.moveTo(plotStartX, panelCenterY);
+      for (let offsetX = 0; offsetX <= plotWidth; offsetX++) {
+        const pressureValue = -Math.cos(waveNumber * offsetX - currentPhase);
+        simulationContext.lineTo(plotStartX + offsetX, panelCenterY - displayAmplitudePixels * Math.max(0, pressureValue));
+      }
+      simulationContext.lineTo(plotEndX, panelCenterY);
+      simulationContext.closePath();
+      simulationContext.fillStyle = convertHexToRgba('#B85C50', 0.1);
+      simulationContext.fill();
+
+      simulationContext.beginPath();
+      simulationContext.moveTo(plotStartX, panelCenterY);
+      for (let offsetX = 0; offsetX <= plotWidth; offsetX++) {
+        const pressureValue = -Math.cos(waveNumber * offsetX - currentPhase);
+        simulationContext.lineTo(plotStartX + offsetX, panelCenterY - displayAmplitudePixels * Math.min(0, pressureValue));
+      }
+      simulationContext.lineTo(plotEndX, panelCenterY);
+      simulationContext.closePath();
+      simulationContext.fillStyle = convertHexToRgba('#3B6B8F', 0.1);
+      simulationContext.fill();
+
+      for (let index = 0; index <= wavelengthsCount * 4; index++) {
+        const arrowCenterX = plotStartX + (index / (wavelengthsCount * 4)) * plotWidth;
+        const arrowPressureValue = -Math.cos(waveNumber * (arrowCenterX - plotStartX) - currentPhase);
+        
+        if (Math.abs(arrowPressureValue) > 0.92) {
+          const arrowPositionY = panelCenterY - displayAmplitudePixels * arrowPressureValue;
+          const arrowDirection = arrowPressureValue > 0 ? -1 : 1;
+          
+          simulationContext.fillStyle = arrowPressureValue > 0 ? convertHexToRgba('#B85C50', 0.5) : convertHexToRgba('#3B6B8F', 0.5);
+          simulationContext.beginPath();
+          simulationContext.moveTo(arrowCenterX, arrowPositionY + arrowDirection * 3);
+          simulationContext.lineTo(arrowCenterX - 5, arrowPositionY + arrowDirection * 12);
+          simulationContext.lineTo(arrowCenterX + 5, arrowPositionY + arrowDirection * 12);
+          simulationContext.closePath();
+          simulationContext.fill();
+        }
+      }
+
+      simulationContext.font = "500 9px 'DM Sans'";
+      simulationContext.fillStyle = '#8A817A';
+      simulationContext.textAlign = 'center';
+      simulationContext.fillText('Distancia →', (plotStartX + plotEndX) / 2, panelCenterY + panelHeight * 0.44 + 10);
+
+      drawVerticalAxisLabel(panelCenterY, 'Presión (relat.)');
+      currentPanelIndex++;
+    }
+
+    if (guidelinesMode === 'all' && activePanelsCount > 1) {
+      simulationContext.setLineDash([1, 5]);
+      simulationContext.strokeStyle = 'rgba(184, 92, 80, 0.1)';
+      simulationContext.lineWidth = 0.5;
+      
+      for (let index = 0; index <= wavelengthsCount * 2; index++) {
+        const verticalGuideX = plotStartX + (index / (wavelengthsCount * 2)) * plotWidth;
+        simulationContext.beginPath();
+        simulationContext.moveTo(verticalGuideX, layoutMargins.top);
+        simulationContext.lineTo(verticalGuideX, canvasHeight - layoutMargins.bottom);
+        simulationContext.stroke();
+      }
+      simulationContext.setLineDash([]);
+    }
+
+    getElementById('lwRLambda').textContent = `${(CONSTANTS.SPEED_OF_SOUND / frequency).toFixed(1)} m`;
+    getElementById('lwRFreq').textContent = `${frequency.toFixed(1)} Hz`;
+    getElementById('lwRPhase').textContent = `${((currentPhase * 180 / Math.PI) % 360).toFixed(0)}°`;
+    getElementById('lwRTime').textContent = `${simulationTime.toFixed(3)} s`;
+
+    requestAnimationFrame(renderSimulationFrame);
+  }
+
+  window.addEventListener('resize', handleContainerResize);
+
+  document.querySelectorAll('.toggle-chip[data-panel]').forEach(interactiveChip => {
+    interactiveChip.addEventListener('click', () => {
+      const panelIdentifier = interactiveChip.dataset.panel;
+      visiblePanels[panelIdentifier] = !visiblePanels[panelIdentifier];
+      
+      interactiveChip.classList.remove('on', 'sage-on', 'burg-on');
+      
+      if (visiblePanels[panelIdentifier]) {
+        if (panelIdentifier === 'particles') {
+          interactiveChip.classList.add('on');
+        } else if (panelIdentifier === 'displacement') {
+          interactiveChip.classList.add('sage-on');
+        } else {
+          interactiveChip.classList.add('burg-on');
+        }
+      }
+    });
+  });
+
+  getElementById('lwBtnPlayPause').addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    updateTransportStatusUI();
+  });
+  
+  getElementById('lwBtnReset').addEventListener('click', () => {
+    simulationTime = 0;
+    isPlaying = true;
+    updateTransportStatusUI();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+    if (!getElementById('tabLongitudinal').classList.contains('active')) return;
+    
+    if (event.code === 'Space') {
+      event.preventDefault();
+      isPlaying = !isPlaying;
+      updateTransportStatusUI();
+    }
+    
+    if (event.code === 'KeyR') {
+      event.preventDefault();
+      simulationTime = 0;
+      isPlaying = true;
+      updateTransportStatusUI();
+    }
+  });
+
+  getElementById('lwBtnExport').addEventListener('click', () => {
+    const exportCanvas = document.createElement('canvas');
+    const exportContext = exportCanvas.getContext('2d');
+    
+    exportCanvas.width = simulationCanvas.width;
+    exportCanvas.height = simulationCanvas.height;
+    
+    exportContext.fillStyle = '#FDF8F3';
+    exportContext.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    exportContext.drawImage(simulationCanvas, 0, 0);
+    
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.download = `verio_onda_longitudinal_${new Date().toISOString().slice(0, 10)}.png`;
+    downloadAnchor.href = exportCanvas.toDataURL();
+    downloadAnchor.click();
+  });
+
+  getElementById('lwDensity').addEventListener('change', () => {
+    activeParticles = [];
+  });
+  
+  getElementById('lwWavelengths').addEventListener('change', () => {
+    activeParticles = [];
+  });
+
+  handleContainerResize();
+  updateTransportStatusUI();
+  requestAnimationFrame(renderSimulationFrame);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initializeTabSystem();
+  initializeSineSimulation();
+  initializeLongitudinalSimulation();
+});
+</script>
+
+</body>
+</html>
